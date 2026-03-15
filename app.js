@@ -14,23 +14,24 @@ app.use((req, res, next) => {
   next()
 })
 
-// 解析 JSON 请求体
+// 解析请求体
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 // 健康检查
 app.get('/', (req, res) => {
   res.json({ code: 200, msg: 'NeteaseCloudMusicApi 服务正常运行' })
 })
 
-// 启用所有 API
+// 启用所有 API - 使用 get 方法而不是 use
 Object.keys(NeteaseCloudMusicApi).forEach(key => {
   if (typeof NeteaseCloudMusicApi[key] === 'function') {
-    app.use(`/${key}`, async (req, res) => {
+    app.get(`/${key}`, async (req, res) => {
       try {
         const result = await NeteaseCloudMusicApi[key]({ ...req.query, ...req.body })
         res.json(result.body || result)
       } catch (e) {
-        res.json({ code: 500, msg: e.message })
+        res.status(500).json({ code: 500, msg: e.message })
       }
     })
   }

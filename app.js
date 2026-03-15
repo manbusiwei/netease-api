@@ -2,6 +2,26 @@ const NeteaseCloudMusicApi = require('NeteaseCloudMusicApi')
 const express = require('express')
 const app = express()
 
+// 启用 CORS
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  if (req.method === 'OPTIONS') {
+    res.status(200).end()
+    return
+  }
+  next()
+})
+
+// 解析 JSON 请求体
+app.use(express.json())
+
+// 健康检查
+app.get('/', (req, res) => {
+  res.json({ code: 200, msg: 'NeteaseCloudMusicApi 服务正常运行' })
+})
+
 // 启用所有 API
 Object.keys(NeteaseCloudMusicApi).forEach(key => {
   if (typeof NeteaseCloudMusicApi[key] === 'function') {

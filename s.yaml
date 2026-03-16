@@ -1,0 +1,43 @@
+# 阿里云函数计算 FC 部署配置
+# 用于部署 NeteaseCloudMusicApi
+
+edition: 3.0.0
+name: netease-music-api
+access: default
+
+vars:
+  region: cn-hangzhou
+  serviceName: netease-music-api
+  functionName: api
+  runtime: nodejs18
+
+resources:
+  netease_api:
+    component: fc3
+    props:
+      region: ${vars.region}
+      serviceName: ${vars.serviceName}
+      functionName: ${vars.functionName}
+      runtime: ${vars.runtime}
+      code: .
+      handler: index.handler
+      memorySize: 512
+      timeout: 30
+      environmentVariables:
+        NODE_ENV: production
+      triggers:
+        - triggerName: httpTrigger
+          triggerType: http
+          triggerConfig:
+            authType: anonymous
+            methods:
+              - GET
+              - POST
+              - OPTIONS
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: /*
+              serviceName: ${vars.serviceName}
+              functionName: ${vars.functionName}

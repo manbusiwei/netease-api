@@ -40,10 +40,8 @@ Object.keys(NeteaseCloudMusicApi).forEach(key => {
 // Vercel serverless 支持
 module.exports = app
 
-// 本地开发
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000
-  app.listen(PORT, () => {
-    console.log(`网易云音乐 API 运行在 http://localhost:${PORT}`)
-  })
-}
+// 启动服务器（支持 Zeabur / Railway 等平台和本地开发）
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+  console.log(`网易云音乐 API 运行在 http://localhost:${PORT}`)
+})
